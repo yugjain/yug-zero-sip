@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0a0a0f">
+<meta name="description" content="Guilt-free drinks that actually taste good.">
+<title>ZeroSip</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080810;
+    --bg2: #0f0f1a;
+    --bg3: #16162a;
+    --card: #12121f;
+    --card-hover: #1a1a2e;
+    --border: rgba(255,255,255,0.07);
+    --border-bright: rgba(255,255,255,0.15);
+    --text: #f0ede8;
+    --text-muted: rgba(240,237,232,0.45);
+    --text-dim: rgba(240,237,232,0.25);
+    --accent: #c8f55a;
+    --accent-dim: rgba(200,245,90,0.12);
+    --accent-glow: rgba(200,245,90,0.25);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; overflow-x: hidden; }
+  body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 9999; opacity: 0.4; }
+
+  header { position: sticky; top: 0; z-index: 100; background: rgba(8,8,16,0.85); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); padding: 0 24px; }
+  .header-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 60px; }
+  .logo { display: flex; align-items: baseline; gap: 8px; }
+  .logo-text { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 2px; color: var(--accent); line-height: 1; }
+  .logo-tagline { font-size: 10px; color: var(--text-muted); letter-spacing: 1.5px; text-transform: uppercase; font-weight: 300; }
+  .recipe-count-badge { font-size: 11px; color: var(--text-muted); letter-spacing: 0.5px; font-weight: 300; }
+
+  .hero { padding: 64px 24px 48px; text-align: center; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: -100px; left: 50%; transform: translateX(-50%); width: 600px; height: 400px; background: radial-gradient(ellipse, rgba(200,245,90,0.06) 0%, transparent 70%); pointer-events: none; }
+  .hero-label { display: inline-block; font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); border: 1px solid rgba(200,245,90,0.3); padding: 5px 14px; border-radius: 100px; margin-bottom: 24px; font-weight: 400; }
+  .hero h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(56px, 10vw, 96px); letter-spacing: 4px; line-height: 0.9; margin-bottom: 16px; }
+  .hero h1 em { font-family: 'Playfair Display', serif; font-style: italic; color: var(--accent); font-size: 0.85em; letter-spacing: 2px; }
+  .hero p { font-size: 15px; color: var(--text-muted); font-weight: 300; max-width: 400px; margin: 0 auto; line-height: 1.7; }
+
+  .filters-section { padding: 0 24px 32px; max-width: 1200px; margin: 0 auto; }
+  .filter-group { margin-bottom: 20px; }
+  .filter-label { font-size: 9px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 10px; font-weight: 500; }
+  .filter-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+  .pill { padding: 7px 16px; border-radius: 100px; border: 1px solid var(--border); background: var(--bg2); color: var(--text-muted); font-size: 12px; font-weight: 400; cursor: pointer; transition: all 0.2s ease; font-family: 'DM Sans', sans-serif; letter-spacing: 0.3px; white-space: nowrap; }
+  .pill:hover { border-color: var(--border-bright); color: var(--text); background: var(--bg3); }
+  .pill.active { background: var(--accent-dim); border-color: rgba(200,245,90,0.4); color: var(--accent); }
+
+  .grid-section { padding: 0 24px 80px; max-width: 1200px; margin: 0 auto; }
+  .results-info { font-size: 12px; color: var(--text-dim); margin-bottom: 24px; letter-spacing: 0.5px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; cursor: pointer; transition: all 0.25s ease; position: relative; animation: fadeIn 0.4s ease both; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+  .card:hover { border-color: var(--border-bright); background: var(--card-hover); transform: translateY(-2px); box-shadow: 0 12px 40px rgba(0,0,0,0.4); }
+  .card-visual { height: 160px; position: relative; display: flex; align-items: center; justify-content: center; font-size: 72px; overflow: hidden; }
+  .card-visual::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 40%, var(--card) 100%); }
+  .card-body { padding: 16px 18px 18px; }
+  .card-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+  .tag { font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; font-weight: 500; }
+  .tag-cat { background: var(--accent-dim); color: var(--accent); border: 1px solid rgba(200,245,90,0.2); }
+  .tag-base { background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid var(--border); }
+  .card-name { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 1.5px; color: var(--text); margin-bottom: 6px; line-height: 1; }
+  .card-desc { font-size: 12px; color: var(--text-muted); line-height: 1.6; font-weight: 300; }
+  .card-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); }
+  .card-meta { font-size: 11px; color: var(--text-dim); display: flex; gap: 12px; }
+  .card-arrow { width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 12px; transition: all 0.2s; }
+  .card:hover .card-arrow { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 200; display: flex; align-items: flex-end; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal { background: var(--bg2); border: 1px solid var(--border-bright); border-radius: 24px 24px 0 0; width: 100%; max-width: 600px; max-height: 88vh; overflow-y: auto; transform: translateY(40px); transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1); scrollbar-width: none; }
+  .modal::-webkit-scrollbar { display: none; }
+  .modal-overlay.open .modal { transform: translateY(0); }
+  .modal-handle { width: 36px; height: 4px; background: var(--border-bright); border-radius: 2px; margin: 14px auto 0; }
+  .modal-visual { height: 180px; display: flex; align-items: center; justify-content: center; font-size: 80px; position: relative; }
+  .modal-close { position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.1); border: none; color: var(--text); cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+  .modal-close:hover { background: rgba(255,255,255,0.2); }
+  .modal-content { padding: 20px 24px 40px; }
+  .modal-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+  .modal-name { font-family: 'Bebas Neue', sans-serif; font-size: 36px; letter-spacing: 2px; line-height: 1; margin-bottom: 8px; }
+  .modal-desc { font-size: 14px; color: var(--text-muted); line-height: 1.7; font-weight: 300; margin-bottom: 28px; }
+  .modal-section-title { font-size: 9px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 12px; font-weight: 500; }
+  .ingredients-list { list-style: none; margin-bottom: 28px; display: flex; flex-direction: column; gap: 8px; }
+  .ingredient-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: var(--bg3); border-radius: 10px; border: 1px solid var(--border); }
+  .ingredient-name { font-size: 13px; font-weight: 400; color: var(--text); }
+  .ingredient-qty { font-size: 12px; color: var(--accent); font-weight: 500; }
+  .steps-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px; }
+  .step-item { display: flex; gap: 14px; align-items: flex-start; }
+  .step-num { width: 24px; height: 24px; border-radius: 50%; background: var(--accent-dim); border: 1px solid rgba(200,245,90,0.3); color: var(--accent); font-size: 11px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  .step-text { font-size: 13px; color: var(--text-muted); line-height: 1.7; font-weight: 300; }
+  .pro-tip { background: linear-gradient(135deg, rgba(200,245,90,0.06), rgba(200,245,90,0.02)); border: 1px solid rgba(200,245,90,0.15); border-radius: 12px; padding: 14px 16px; }
+  .pro-tip-label { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; font-weight: 500; }
+  .pro-tip-text { font-size: 12px; color: var(--text-muted); line-height: 1.6; font-weight: 300; }
+  .no-results { grid-column: 1 / -1; text-align: center; padding: 60px 0; color: var(--text-dim); font-size: 14px; }
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 2px; }
+  @media (max-width: 600px) { .hero { padding: 40px 20px 32px; } .filters-section, .grid-section { padding-left: 16px; padding-right: 16px; } .grid { grid-template-columns: 1fr; } .modal { border-radius: 20px 20px 0 0; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <span class="logo-text">ZEROSIP</span>
+      <span class="logo-tagline">zero guilt. full flavour.</span>
+    </div>
+    <span class="recipe-count-badge" id="headerCount">30 recipes</span>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-label">✦ Sugar-Free · Alcohol-Free · Actually Good</div>
+  <h1>DRINKS THAT<br><em>hit different</em></h1>
+  <p>Guilt-free recipes built on zero-sugar bases with real ingredients that make you forget you're not drinking sugar.</p>
+</section>
+
+<section class="filters-section">
+  <div class="filter-group">
+    <div class="filter-label">Filter by Category</div>
+    <div class="filter-pills" id="catFilters"></div>
+  </div>
+  <div class="filter-group">
+    <div class="filter-label">Filter by Base</div>
+    <div class="filter-pills" id="baseFilters"></div>
+  </div>
+</section>
+
+<section class="grid-section">
+  <div class="results-info" id="resultsInfo"></div>
+  <div class="grid" id="grid"></div>
+</section>
+
+<div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+  <div class="modal" id="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-visual" id="modalVisual"></div>
+    <div class="modal-content" id="modalContent"></div>
+  </div>
+</div>
+
+<script>
+const RECIPES = [
+  { id:1, name:"Citrus Spark", category:"Citrus & Fresh", base:"Sprite Zero", emoji:"🍋", bg:"linear-gradient(135deg,#1a2a0a,#0f1a05)", desc:"The everyday hero. Lime and mint lift Sprite Zero into something genuinely refreshing, with kala namak giving it that can't-place-it depth.", time:"2 min", difficulty:"Easy", ingredients:[{name:"Sprite Zero",qty:"250ml"},{name:"Fresh lime juice",qty:"1 tbsp"},{name:"Mint leaves",qty:"8–10 leaves"},{name:"Kala namak",qty:"a pinch"},{name:"Ice",qty:"generous"}], steps:["Add mint to the glass and press gently — don't shred them.","Squeeze in lime juice and add kala namak.","Fill with ice, pour Sprite Zero slowly over the back of a spoon.","Give it one stir and serve immediately."], tip:"Press the mint rather than muddling — keeps it fragrant without turning bitter." },
+  { id:2, name:"Ginger Snap", category:"Citrus & Fresh", base:"Tonic Water", emoji:"🫚", bg:"linear-gradient(135deg,#2a1f00,#1a1200)", desc:"Tonic water's subtle bitterness is the perfect stage for fresh ginger. Sharp, clean, and more complex than it looks.", time:"3 min", difficulty:"Easy", ingredients:[{name:"Tonic water (low-cal)",qty:"200ml"},{name:"Fresh ginger",qty:"4–5 thin slices"},{name:"Lemon juice",qty:"1 tbsp"},{name:"Sea salt",qty:"a pinch"},{name:"Ice",qty:"generous"}], steps:["Muddle ginger slices at the bottom of the glass until fragrant.","Add ice and lemon juice.","Pour tonic water gently to preserve fizz.","Add salt, stir once, garnish with a ginger slice."], tip:"Use room temperature ginger and cold tonic — the contrast extracts more flavor." },
+  { id:3, name:"Cucumber Zen", category:"Citrus & Fresh", base:"Tonic Water", emoji:"🥒", bg:"linear-gradient(135deg,#001f1a,#001410)", desc:"Spa water, but with fizz and actual flavour. Cucumber and black pepper on tonic is quietly sophisticated.", time:"3 min", difficulty:"Easy", ingredients:[{name:"Tonic water (low-cal)",qty:"200ml"},{name:"Cucumber",qty:"4–5 thin rounds"},{name:"Mint leaves",qty:"6 leaves"},{name:"Lime juice",qty:"1 tsp"},{name:"Cracked black pepper",qty:"2–3 cracks"},{name:"Ice",qty:"generous"}], steps:["Muddle cucumber rounds with mint in the glass.","Add lime juice and a few cracks of black pepper.","Fill with ice, pour tonic gently.","Garnish with a cucumber ribbon."], tip:"Refrigerate cucumber slices for 20 min before using — extra chill makes a real difference." },
+  { id:4, name:"7UP Elderflower", category:"Citrus & Fresh", base:"7UP Zero Sugar", emoji:"🌸", bg:"linear-gradient(135deg,#1f0015,#120009)", desc:"7UP Zero is cleaner and crisper than Sprite Zero, making it ideal for floral pairings. Elderflower and cucumber on a light base — unexpectedly elegant.", time:"2 min", difficulty:"Easy", ingredients:[{name:"7UP Zero Sugar",qty:"250ml"},{name:"Sugar-free elderflower cordial",qty:"1 tsp"},{name:"Cucumber slices",qty:"3–4 rounds"},{name:"Mint leaves",qty:"4–5 leaves"},{name:"Ice",qty:"generous"}], steps:["Add cucumber and mint to glass, press gently.","Add elderflower cordial and stir.","Fill with ice and pour 7UP Zero slowly.","Garnish with a thin cucumber round."], tip:"Monin and Torani both do zero-sugar elderflower — easy to find online." },
+  { id:5, name:"Blue Lagoon Zero", category:"Citrus & Fresh", base:"Sprite Zero", emoji:"🫐", bg:"linear-gradient(135deg,#00102a,#000a1a)", desc:"The visual showstopper of the lineup. Zero-sugar blue curacao syrup turns Sprite Zero into something that looks like a resort drink and tastes like one too.", time:"2 min", difficulty:"Easy", ingredients:[{name:"Sprite Zero",qty:"200ml"},{name:"Zero-sugar blue curacao syrup",qty:"2 tsp"},{name:"Lemon juice",qty:"1 tsp"},{name:"Ice",qty:"generous"},{name:"Lemon wheel",qty:"to garnish"}], steps:["Fill glass with ice.","Add lemon juice and blue curacao syrup.","Pour Sprite Zero gently — the color will swirl beautifully.","Garnish with lemon wheel. Don't stir — let it layer."], tip:"Pour Sprite Zero from height to get the ombre blue-to-clear gradient effect." },
+  { id:6, name:"Cola Citrus", category:"Citrus & Fresh", base:"Coke Zero", emoji:"🍊", bg:"linear-gradient(135deg,#1f0d00,#120800)", desc:"Cola and citrus is a classic combination for a reason. A small splash of orange juice opens up Coke Zero in a way that just works.", time:"2 min", difficulty:"Easy", ingredients:[{name:"Coke Zero",qty:"200ml"},{name:"Fresh orange juice",qty:"30ml splash"},{name:"Lime juice",qty:"1 tsp"},{name:"Orange zest",qty:"a few strips"},{name:"Ice",qty:"generous"}], steps:["Fill glass with ice.","Squeeze in lime juice and orange juice.","Pour Coke Zero slowly.","Express orange zest over the glass, drop it in."], tip:"The key is restraint with orange juice — 30ml max or it overpowers the fizz." },
+  { id:7, name:"Mint Mojito Zero", category:"Citrus & Fresh", base:"Sprite Zero", emoji:"🍃", bg:"linear-gradient(135deg,#001a15,#000f0a)", desc:"The classic done right with zero sugar. Proper pressing is the only non-negotiable step here. Rush it and you get a flat green drink. Do it right and you get something close to the real thing.", time:"4 min", difficulty:"Medium", ingredients:[{name:"Sprite Zero",qty:"200ml"},{name:"Mint leaves",qty:"12–15 leaves"},{name:"Lime juice",qty:"1.5 tbsp"},{name:"Crushed ice",qty:"packed full"},{name:"Lime wheel",qty:"to garnish"}], steps:["Add mint leaves to glass. Press firmly — not crushing, pressing — until fragrant.","Add lime juice.","Pack glass with crushed ice.","Pour Sprite Zero from height. Garnish with lime wheel and a mint sprig."], tip:"Press mint with the back of a spoon, not a muddler — pressing extracts the essential oils without releasing bitter compounds from the leaf body." },
+  { id:8, name:"Chaat Attack", category:"Spiced & Desi", base:"Sprite Zero", emoji:"⚡", bg:"linear-gradient(135deg,#1f0e00,#100700)", desc:"The drink that started it all. Chaat masala on Sprite Zero with lemon and ginger. Tangy, spiced, and impossible to put down.", time:"2 min", difficulty:"Easy", ingredients:[{name:"Sprite Zero",qty:"250ml"},{name:"Chaat masala",qty:"¼ tsp"},{name:"Lemon juice",qty:"1 tbsp"},{name:"Fresh ginger juice",qty:"½ tsp"},{name:"Ice",qty:"generous"}], steps:["Add chaat masala to glass with lemon and ginger juice. Stir.","Fill with ice.","Pour Sprite Zero slowly.","Taste and adjust masala — start less, add more."], tip:"MDH or Everest chaat masala both work. Avoid versions with added sugar." },
+  { id:9, name:"Jaljeera Fizz", category:"Spiced & Desi", base:"Soda Water", emoji:"🌿", bg:"linear-gradient(135deg,#0f1f00,#081200)", desc:"Jaljeera was always meant to be fizzy. This just makes it official. Earthy, cooling, and summer in a glass.", time:"3 min", difficulty:"Easy", ingredients:[{name:"Soda water",qty:"250ml"},{name:"Jaljeera powder",qty:"1 tsp"},{name:"Lemon juice",qty:"1 tbsp"},{name:"Mint leaves",qty:"6 leaves"},{name:"Kala namak",qty:"a pinch"},{name:"Ice",qty:"generous"}], steps:["Mix jaljeera powder with lemon juice until dissolved.","Add kala namak and mint leaves, press gently.","Fill with ice and pour soda water.","Stir once from the bottom."], tip:"Chill the jaljeera-lemon mixture in the fridge for 10 min before using — the flavors intensify." },
+  { id:10, name:"Imli Storm", category:"Spiced & Desi", base:"Sprite Zero", emoji:"🌪️", bg:"linear-gradient(135deg,#1f1500,#120d00)", desc:"Tamarind concentrate brings a depth that no citrus can replicate. Sour, spiced, and completely addictive — the most complex drink in the lineup.", time:"4 min", difficulty:"Medium", ingredients:[{name:"Sprite Zero",qty:"200ml"},{name:"Unsweetened tamarind concentrate",qty:"1 tsp"},{name:"Chaat masala",qty:"¼ tsp"},{name:"Cracked black pepper",qty:"2 cracks"},{name:"Lemon juice",qty:"1 tsp"},{name:"Ice",qty:"generous"}], steps:["Dissolve tamarind concentrate in 2 tbsp warm water.","Add chaat masala, lemon, and black pepper. Mix well.","Cool the mixture completely, fill glass with ice.","Pour mixture, then top with Sprite Zero."], tip:"Get unsweetened tamarind paste from any Indian grocery — sweetened versions throw off the balance entirely." },
+  { id:11, name:"Masala Coke", category:"Spiced & Desi", base:"Coke Zero", emoji:"🌶️", bg:"linear-gradient(135deg,#1f001a,#0f0010)", desc:"Dead simple. Criminally underrated. Chaat masala and Coke Zero with a wedge of lemon. Takes 60 seconds and punches far above its weight.", time:"1 min", difficulty:"Easy", ingredients:[{name:"Coke Zero",qty:"300ml"},{name:"Chaat masala",qty:"¼ tsp"},{name:"Lemon juice",qty:"1 tsp"},{name:"Ice",qty:"generous"}], steps:["Fill glass with ice.","Add chaat masala and lemon juice.","Pour Coke Zero. Stir once, gently.","Serve immediately with a lemon wedge."], tip:"This is the one to make when guests are arriving in 2 minutes. Never fails." },
+  { id:12, name:"Kairi Cooler", category:"Spiced & Desi", base:"Soda Water", emoji:"🥭", bg:"linear-gradient(135deg,#0a1f00,#051200)", desc:"Raw mango pulp on soda water with kala namak and roasted cumin. An aam panna that grew up and got fizzy.", time:"4 min", difficulty:"Medium", ingredients:[{name:"Soda water",qty:"200ml"},{name:"Raw mango pulp (unsweetened)",qty:"2 tbsp"},{name:"Kala namak",qty:"¼ tsp"},{name:"Roasted cumin powder",qty:"a pinch"},{name:"Mint leaves",qty:"4 leaves"},{name:"Ice",qty:"generous"}], steps:["Mix mango pulp with kala namak and cumin until smooth.","Thin with 2 tbsp water if needed.","Add to glass with ice and mint.","Top with soda water and stir gently."], tip:"Roast your own cumin for 2 minutes in a dry pan — the aroma is incomparable to packaged powder." },
+  { id:13, name:"Dark & Spicy", category:"Spiced & Desi", base:"Thums Up X-Force", emoji:"🔥", bg:"linear-gradient(135deg,#1f0010,#0f0008)", desc:"Thums Up X-Force already has aggression built in. Fresh ginger and chilli flakes turn the dial up further. Not for the faint-hearted.", time:"3 min", difficulty:"Easy", ingredients:[{name:"Thums Up X-Force",qty:"250ml"},{name:"Fresh ginger juice",qty:"1 tsp"},{name:"Lime juice",qty:"1 tsp"},{name:"Chilli flakes",qty:"a pinch on rim"},{name:"Ice",qty:"generous"}], steps:["Run a lime wedge around the rim of the glass.","Dip the rim in chilli flakes.","Fill with ice, add ginger juice and lime.","Pour X-Force slowly over ice."], tip:"Tajin on the rim instead of plain chilli flakes adds a citrus-spice dimension." },
+  { id:14, name:"Fanta Spice", category:"Spiced & Desi", base:"Fanta Zero", emoji:"🍊", bg:"linear-gradient(135deg,#1f0800,#100400)", desc:"Orange and spice is a flavor combination most people have never tried in drink form. Fanta Zero is the perfect canvas — chaat masala makes it taste like a street drink reimagined.", time:"2 min", difficulty:"Easy", ingredients:[{name:"Fanta Zero",qty:"250ml"},{name:"Chaat masala",qty:"¼ tsp"},{name:"Lemon juice",qty:"1 tsp"},{name:"Fresh ginger slices",qty:"2–3 thin"},{name:"Ice",qty:"generous"}], steps:["Muddle ginger slices at the bottom of the glass.","Add chaat masala and lemon juice, stir.","Fill with ice and pour Fanta Zero.","Garnish with an orange slice."], tip:"A tiny pinch of kala namak alongside the chaat masala takes this to another level." },
+  { id:15, name:"Aamras Mule", category:"Spiced & Desi", base:"Paper Boat Aamras Zero", emoji:"🥭", bg:"linear-gradient(135deg,#1f0e00,#0f0700)", desc:"Paper Boat Aamras Zero as a Moscow Mule base is a stroke of insight. Ginger, lime, and mango fizz on a hot afternoon is genuinely transcendent.", time:"3 min", difficulty:"Easy", ingredients:[{name:"Paper Boat Aamras Zero",qty:"200ml"},{name:"Soda water top-up",qty:"50ml"},{name:"Fresh ginger juice",qty:"1 tsp"},{name:"Lime juice",qty:"1 tbsp"},{name:"Mint leaves",qty:"6 leaves"},{name:"Ice",qty:"generous"}], steps:["Add mint and lime juice to a mule mug or tall glass.","Add ginger juice and ice.","Pour Paper Boat Aamras Zero.","Top with a splash of soda water. Garnish with a lime wheel."], tip:"Copper mug if you have one — keeps it cold for longer and looks the part." },
+  { id:16, name:"Chilli Guava Kick", category:"Spiced & Desi", base:"Paper Boat Chilli Guava Zero", emoji:"🌶️", bg:"linear-gradient(135deg,#1f0010,#0f0008)", desc:"Paper Boat Chilli Guava Zero already has built-in spice. A chaat masala rim and lime take it from snack to signature drink.", time:"3 min", difficulty:"Easy", ingredients:[{name:"Paper Boat Chilli Guava Zero",qty:"250ml"},{name:"Lime juice",qty:"1 tsp"},{name:"Chaat masala + chilli flakes",qty:"rim mix"},{name:"Ice",qty:"generous"}], steps:["Mix chaat masala and chilli flakes on a small plate.","Run lime around the rim and dip in the mix.","Fill with ice, add lime juice.","Pour Paper Boat Chilli Guava Zero carefully to preserve the rim."], tip:"This drink practically makes itself — the base does all the work. The rim is pure theater." },
+  { id:17, name:"Watermelon Chill", category:"Fruity & Light", base:"Sprite Zero", emoji:"🍉", bg:"linear-gradient(135deg,#1f0015,#100009)", desc:"Fresh watermelon juice in Sprite Zero. Sounds simple, is simple, tastes like a summer afternoon.", time:"5 min", difficulty:"Easy", ingredients:[{name:"Sprite Zero",qty:"150ml"},{name:"Fresh watermelon juice",qty:"80ml"},{name:"Mint leaves",qty:"6 leaves"},{name:"Lime juice",qty:"1 tsp"},{name:"Ice",qty:"generous"}], steps:["Blend a small chunk of watermelon and strain for juice.","Add mint to glass and press gently.","Add lime juice and watermelon juice over ice.","Top with Sprite Zero — don't overstir."], tip:"Freeze watermelon cubes and use as ice — dilutes nothing and keeps the flavor as it melts." },
+  { id:18, name:"Strawberry Fizz", category:"Fruity & Light", base:"Sprite Zero", emoji:"🍓", bg:"linear-gradient(135deg,#1f000d,#0f0008)", desc:"Muddled strawberry and basil is a more interesting pairing than expected. Basil's slight anise note makes the strawberry taste more vivid, not less.", time:"4 min", difficulty:"Easy", ingredients:[{name:"Sprite Zero",qty:"200ml"},{name:"Fresh strawberries",qty:"3 medium"},{name:"Basil leaves",qty:"3–4 leaves"},{name:"Lemon juice",qty:"1 tsp"},{name:"Ice",qty:"generous"}], steps:["Hull and slice strawberries, muddle with basil.","Add lemon juice and stir.","Fill with ice, pour Sprite Zero.","Garnish with a strawberry half."], tip:"Thai basil instead of Italian basil adds a spicier, more exotic edge." },
+  { id:19, name:"Peach Mist", category:"Fruity & Light", base:"Tonic Water", emoji:"🍑", bg:"linear-gradient(135deg,#1f1000,#100a00)", desc:"Tonic water's bitterness is the secret weapon here — it stops peach from going too sweet. Mint adds the cooling finish.", time:"4 min", difficulty:"Easy", ingredients:[{name:"Tonic water (low-cal)",qty:"200ml"},{name:"Fresh peach slices",qty:"4–5 slices"},{name:"Mint leaves",qty:"5 leaves"},{name:"Lime juice",qty:"1 tsp"},{name:"Ice",qty:"generous"}], steps:["Muddle peach slices with mint until fragrant.","Add lime juice, fill with ice.","Pour tonic water slowly.","Garnish with a peach slice."], tip:"If peaches aren't in season, unsweetened peach nectar works — use 40ml instead." },
+  { id:20, name:"Pomegranate Zing", category:"Fruity & Light", base:"Soda Water", emoji:"💜", bg:"linear-gradient(135deg,#140020,#0a0012)", desc:"Pomegranate juice is tart enough to not need sugar. A small splash in soda water with ginger and lemon makes a drink that feels genuinely luxurious.", time:"2 min", difficulty:"Easy", ingredients:[{name:"Soda water",qty:"200ml"},{name:"Pomegranate juice (unsweetened)",qty:"40ml"},{name:"Fresh ginger juice",qty:"½ tsp"},{name:"Lemon juice",qty:"1 tsp"},{name:"Ice",qty:"generous"}], steps:["Add ginger juice and lemon juice to glass.","Pour pomegranate juice over ice.","Top with soda water — the color layers beautifully.","Don't stir fully — let it gradient."], tip:"Real pomegranate arils dropped in as garnish make this look incredible." },
+  { id:21, name:"Mango Dew Fizz", category:"Fruity & Light", base:"Mountain Dew Zero", emoji:"🥭", bg:"linear-gradient(135deg,#0f1f00,#081200)", desc:"Mountain Dew Zero already carries citrus-mango DNA. A small piece of muddled fresh mango and kala namak turns it into something the brand itself hasn't thought of.", time:"4 min", difficulty:"Easy", ingredients:[{name:"Mountain Dew Zero Sugar",qty:"250ml"},{name:"Fresh mango chunk",qty:"2 tbsp muddled"},{name:"Lime juice",qty:"1 tsp"},{name:"Kala namak",qty:"a pinch"},{name:"Ice",qty:"generous"}], steps:["Muddle fresh mango at the bottom of the glass.","Add lime juice and kala namak, stir.","Fill with ice.","Pour Mountain Dew Zero slowly."], tip:"Alphonso mango when in season — nothing else comes close for this particular drink." },
+  { id:22, name:"Tropical Zero", category:"Fruity & Light", base:"Sprite Zero", emoji:"🌴", bg:"linear-gradient(135deg,#001f1a,#000f10)", desc:"Sprite Zero with pineapple, coconut water, and lime. A mocktail that doesn't know it's not on a beach.", time:"4 min", difficulty:"Easy", ingredients:[{name:"Sprite Zero",qty:"150ml"},{name:"Pineapple juice (unsweetened)",qty:"40ml"},{name:"Coconut water",qty:"40ml"},{name:"Lime juice",qty:"1 tsp"},{name:"Ice",qty:"generous"}], steps:["Mix pineapple juice, coconut water, and lime in glass.","Fill with ice.","Pour Sprite Zero gently over.","Garnish with a pineapple slice or lime wheel."], tip:"Frosted glass from the freezer for 10 minutes makes this feel like a resort drink." },
+  { id:23, name:"Pink Pepper", category:"Herb & Floral", base:"Soda Water", emoji:"🌹", bg:"linear-gradient(135deg,#1f0015,#0f000a)", desc:"A tiny amount of rose water, pink peppercorn, and lemon on soda water. Floral, slightly spiced, and quietly unexpected.", time:"2 min", difficulty:"Easy", ingredients:[{name:"Soda water",qty:"250ml"},{name:"Rose water",qty:"¼ tsp — go easy"},{name:"Pink peppercorns",qty:"3–4 lightly crushed"},{name:"Lemon juice",qty:"1 tbsp"},{name:"Ice",qty:"generous"}], steps:["Add rose water and lemon juice to glass — stir to combine.","Crush pink peppercorns lightly and add.","Fill with ice and top with soda water.","Garnish with a rose petal if you have one."], tip:"Rose water is potent — start with ¼ tsp. Too much and it tastes like soap." },
+  { id:24, name:"Kokum Fizz", category:"Herb & Floral", base:"Soda Water", emoji:"🫐", bg:"linear-gradient(135deg,#14001f,#08000f)", desc:"Kokum is one of those ingredients coastal India takes for granted and the rest of the world hasn't discovered yet. Cooling, tart, and unlike anything else.", time:"3 min", difficulty:"Easy", ingredients:[{name:"Soda water",qty:"200ml"},{name:"Kokum concentrate (unsweetened)",qty:"2 tsp"},{name:"Fresh ginger slices",qty:"2 thin"},{name:"Sea salt",qty:"a pinch"},{name:"Ice",qty:"generous"}], steps:["Dissolve kokum concentrate in 2 tbsp cold water.","Add ginger slices and press gently.","Add salt and ice, pour soda water.","Stir once from the bottom."], tip:"Kokum concentrate from Goa or Konkan brands is far superior to the powdered version." },
+  { id:25, name:"Nannari Lemonade", category:"Herb & Floral", base:"Paper Boat Nannari Zero", emoji:"🌾", bg:"linear-gradient(135deg,#1a1500,#0f0d00)", desc:"Nannari (sarsaparilla) has a complex, earthy-sweet profile. Add lemon and basil and you have a drink that tastes ancient and refreshing at once.", time:"2 min", difficulty:"Easy", ingredients:[{name:"Paper Boat Nannari Zero",qty:"250ml"},{name:"Lemon juice",qty:"1 tsp"},{name:"Basil leaves",qty:"3–4 leaves"},{name:"Crushed ice",qty:"generous"}], steps:["Tear basil leaves and add to glass.","Add lemon juice.","Fill with crushed ice.","Pour Paper Boat Nannari Zero slowly."], tip:"Nannari has a natural cooling effect — especially good after a workout or in peak summer." },
+  { id:26, name:"Jaljeera Upgrade", category:"Herb & Floral", base:"Paper Boat Jaljeera Zero", emoji:"🌿", bg:"linear-gradient(135deg,#001f15,#000f0a)", desc:"Paper Boat Jaljeera Zero is already a nearly complete drink. Fresh lemon and mint just complete what it started — elevated street food in a glass.", time:"2 min", difficulty:"Easy", ingredients:[{name:"Paper Boat Jaljeera Zero",qty:"250ml"},{name:"Fresh lemon juice",qty:"1 tsp"},{name:"Mint leaves",qty:"8 leaves"},{name:"Black salt rim",qty:"optional"},{name:"Ice",qty:"generous"}], steps:["Run a lemon wedge around the rim and dip in black salt.","Press mint leaves into the glass.","Fill with ice and add lemon juice.","Pour Paper Boat Jaljeera Zero."], tip:"The black salt rim makes this feel like a proper bar presentation." },
+  { id:27, name:"Kokum Cooler", category:"Herb & Floral", base:"Paper Boat Kokum Zero", emoji:"💜", bg:"linear-gradient(135deg,#14001f,#080010)", desc:"Paper Boat Kokum Zero is already doing the heavy lifting. Cucumber slices and kala namak just refine what's already there into something stunning.", time:"2 min", difficulty:"Easy", ingredients:[{name:"Paper Boat Kokum Zero",qty:"250ml"},{name:"Cucumber slices",qty:"4–5 rounds"},{name:"Kala namak",qty:"a pinch"},{name:"Soda water top-up",qty:"30ml"},{name:"Ice",qty:"generous"}], steps:["Press cucumber slices in the glass.","Add kala namak.","Fill with ice and pour Paper Boat Kokum Zero.","Add soda water top-up for extra fizz."], tip:"Kokum is naturally cooling — Ayurvedically speaking, this is peak summer hydration." },
+  { id:28, name:"Thums Up Noir", category:"Bold & Dark", base:"Thums Up X-Force", emoji:"☕", bg:"linear-gradient(135deg,#1a1000,#0f0800)", desc:"Cold brew meets Thums Up X-Force. The depth of the coffee and the aggression of X-Force create something that tastes like a designer beverage.", time:"3 min", difficulty:"Easy", ingredients:[{name:"Thums Up X-Force",qty:"200ml"},{name:"Cold brew concentrate",qty:"30ml"},{name:"Orange zest",qty:"a few strips"},{name:"Ice",qty:"one large cube"}], steps:["Add one large ice cube to a rocks glass.","Pour cold brew concentrate over ice.","Top with Thums Up X-Force.","Express orange zest over the glass, drop it in."], tip:"One large cube melts slower than crushed ice — keeps the drink from diluting mid-sip." },
+  { id:29, name:"Pepsi Black Espresso", category:"Bold & Dark", base:"Pepsi Black", emoji:"🖤", bg:"linear-gradient(135deg,#1f0a00,#0f0500)", desc:"Pepsi Black is sweeter and rounder than X-Force, which makes it pair better with citrus. Cold brew and orange is a known great combination — Pepsi Black just adds fizz.", time:"3 min", difficulty:"Easy", ingredients:[{name:"Pepsi Black",qty:"200ml"},{name:"Cold brew concentrate",qty:"25ml"},{name:"Orange juice",qty:"1 tbsp fresh"},{name:"Orange zest",qty:"a strip"},{name:"Ice",qty:"generous"}], steps:["Fill glass with ice.","Add cold brew and orange juice.","Pour Pepsi Black slowly.","Zest orange over the top, drop in."], tip:"Don't overstir — you want three distinct layers: coffee at base, cola in middle, zest aroma on top." },
+  { id:30, name:"Dew Citrus Slush", category:"Bold & Dark", base:"Mountain Dew Zero", emoji:"⚡", bg:"linear-gradient(135deg,#101f00,#080f00)", desc:"Mountain Dew Zero needs almost nothing — its citrus character is already assertive. Lime, mint, and salt on crushed ice turns it into a slush-style drink.", time:"2 min", difficulty:"Easy", ingredients:[{name:"Mountain Dew Zero Sugar",qty:"250ml"},{name:"Lime juice",qty:"1 tbsp"},{name:"Mint leaves",qty:"8 leaves"},{name:"Sea salt",qty:"a tiny pinch"},{name:"Crushed ice",qty:"packed full"}], steps:["Pack glass with crushed ice.","Add lime juice, salt, and mint. Press gently.","Pour Mountain Dew Zero.","Drink through a wide straw."], tip:"Blend the whole thing for 5 seconds for a proper slush — almost zero calories and better than any Slurpee." }
+];
+
+const CATEGORIES = ["All","Citrus & Fresh","Spiced & Desi","Fruity & Light","Herb & Floral","Bold & Dark"];
+const BASES = ["All","Sprite Zero","Coke Zero","Pepsi Black","Thums Up X-Force","7UP Zero Sugar","Mountain Dew Zero","Fanta Zero","Tonic Water","Soda Water","Paper Boat Aamras Zero","Paper Boat Jaljeera Zero","Paper Boat Kokum Zero","Paper Boat Nannari Zero","Paper Boat Chilli Guava Zero"];
+
+let activeCat = "All";
+let activeBase = "All";
+
+const CAT_COLORS = {"Citrus & Fresh":"#c8f55a","Spiced & Desi":"#ff7c3d","Fruity & Light":"#ff4fa3","Herb & Floral":"#3dffd8","Bold & Dark":"#ffd166"};
+
+function init() { renderFilters(); renderGrid(); }
+
+function renderFilters() {
+  document.getElementById('catFilters').innerHTML = CATEGORIES.map(c =>
+    `<button class="pill ${activeCat===c?'active':''}" onclick="setCat('${c}')">${c}</button>`).join('');
+  document.getElementById('baseFilters').innerHTML = BASES.map(b =>
+    `<button class="pill ${activeBase===b?'active':''}" onclick="setBase('${b}')">${b.replace('Paper Boat ','PB ')}</button>`).join('');
+}
+
+function setCat(c) { activeCat=c; renderFilters(); renderGrid(); }
+function setBase(b) { activeBase=b; renderFilters(); renderGrid(); }
+
+function getFiltered() {
+  return RECIPES.filter(r => (activeCat==="All"||r.category===activeCat) && (activeBase==="All"||r.base===activeBase));
+}
+
+function renderGrid() {
+  const filtered = getFiltered();
+  const grid = document.getElementById('grid');
+  document.getElementById('resultsInfo').textContent = filtered.length===RECIPES.length
+    ? `All ${RECIPES.length} recipes` : `${filtered.length} of ${RECIPES.length} recipes`;
+  if (!filtered.length) { grid.innerHTML='<div class="no-results">No drinks match those filters. Try a different combination.</div>'; return; }
+  grid.innerHTML = filtered.map((r,i) => {
+    const cc = CAT_COLORS[r.category]||'#c8f55a';
+    return `<div class="card" onclick="openModal(${r.id})" style="animation-delay:${i*0.04}s">
+      <div class="card-visual" style="background:${r.bg}"><span style="position:relative;z-index:1">${r.emoji}</span></div>
+      <div class="card-body">
+        <div class="card-tags">
+          <span class="tag tag-cat" style="color:${cc};background:${cc}18;border-color:${cc}30">${r.category}</span>
+          <span class="tag tag-base">${r.base.replace('Paper Boat ','PB ')}</span>
+        </div>
+        <div class="card-name">${r.name}</div>
+        <div class="card-desc">${r.desc.substring(0,90)}...</div>
+        <div class="card-footer">
+          <div class="card-meta"><span>⏱ ${r.time}</span><span>◆ ${r.difficulty}</span></div>
+          <div class="card-arrow">→</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openModal(id) {
+  const r = RECIPES.find(x=>x.id===id); if(!r) return;
+  const cc = CAT_COLORS[r.category]||'#c8f55a';
+  document.getElementById('modalVisual').style.background = r.bg;
+  document.getElementById('modalVisual').innerHTML = `<span style="font-size:80px;position:relative;z-index:1">${r.emoji}</span><button class="modal-close" onclick="closeModal()">✕</button>`;
+  document.getElementById('modalContent').innerHTML = `
+    <div class="modal-tags">
+      <span class="tag tag-cat" style="color:${cc};background:${cc}18;border-color:${cc}30">${r.category}</span>
+      <span class="tag tag-base">${r.base}</span>
+      <span class="tag tag-base">⏱ ${r.time}</span>
+      <span class="tag tag-base">◆ ${r.difficulty}</span>
+    </div>
+    <div class="modal-name">${r.name}</div>
+    <div class="modal-desc">${r.desc}</div>
+    <div class="modal-section-title">Ingredients</div>
+    <ul class="ingredients-list">${r.ingredients.map(ing=>`<li class="ingredient-item"><span class="ingredient-name">${ing.name}</span><span class="ingredient-qty">${ing.qty}</span></li>`).join('')}</ul>
+    <div class="modal-section-title">Method</div>
+    <div class="steps-list">${r.steps.map((s,i)=>`<div class="step-item"><div class="step-num">${i+1}</div><div class="step-text">${s}</div></div>`).join('')}</div>
+    <div class="pro-tip"><div class="pro-tip-label">✦ Pro Tip</div><div class="pro-tip-text">${r.tip}</div></div>`;
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); document.body.style.overflow=''; }
+function handleOverlayClick(e) { if(e.target===document.getElementById('modalOverlay')) closeModal(); }
+document.addEventListener('keydown', e => { if(e.key==='Escape') closeModal(); });
+
+init();
+</script>
+</body>
+</html>
